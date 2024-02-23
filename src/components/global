@@ -1,0 +1,4 @@
+(function (window) {
+  var global = window || {};
+  global.global = global;
+})(window);
