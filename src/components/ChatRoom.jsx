@@ -319,7 +319,12 @@
 
 // export default ChatRoom;
 
-import './global';
+// import './global';
+
+
+
+
+
 import React, { useState, useEffect } from 'react';
 import { over } from 'stompjs';
 import SockJS from 'sockjs-client';
@@ -345,7 +350,7 @@ const ChatRoom = () => {
                 }
             }
         };
-        document.addEventListener("keydown", handleEnter);
+        document.addEventListener("keydown", handleEnter);  
 
         return () => {
             document.removeEventListener("keydown", handleEnter);
@@ -355,7 +360,7 @@ const ChatRoom = () => {
     const connect = (event) => {
         event.preventDefault();
         let Sock = new SockJS('http://localhost:8080/ws');
-        stompClient = over(Sock);
+        stompClient = over(Sock);//websocket connenection
         stompClient.connect({}, onConnected, onError);
     }
 
@@ -369,7 +374,7 @@ const ChatRoom = () => {
         var chatMessage = {
             senderName: userData.username,
             status: "JOIN"
-        };
+        };        
         stompClient.send("/app/message", {}, JSON.stringify(chatMessage));
     }
 
@@ -377,7 +382,7 @@ const ChatRoom = () => {
         var payloadData = JSON.parse(payload.body);
         if (payloadData.status === "JOIN") {
             setUsers(new Set(users).add(payloadData.senderName)); // Correctly update the users set
-            setPublicChats(publicChats => [...publicChats, { message: `${payloadData.senderName} joined the chat!`, status: 'JOIN', senderName: 'System' }]);
+            setPublicChats(publicChats => [...publicChats, { message: `${payloadData.senderName} joined the chat!`, status: 'JOIN' , senderName: 'System' }]);
         } else if (payloadData.status === "MESSAGE") {
             setPublicChats(publicChats => [...publicChats, payloadData]);
         }
@@ -396,7 +401,7 @@ const ChatRoom = () => {
         if (stompClient) {
             var chatMessage = {
                 senderName: userData.username,
-                message: userData.message,
+                message: userData.message, 
                 status: "MESSAGE"
             };
             stompClient.send("/app/message", {}, JSON.stringify(chatMessage));
